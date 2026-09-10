@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>スペース・エクスプローラー</title>
+    <style>
+        body { font-family: sans-serif; margin: 30px; background-color: #0f172a; color: #f8fafc; }
+        .card { background: #1e293b; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        img { max-width: 500px; width: 100%; height: auto; border-radius: 8px; }
+        button, .btn { background: #38bdf8; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; color: #0f172a; font-weight: bold; text-decoration: none; display: inline-block; }
+        .btn-random { background: #a855f7; color: white; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .title-link { color: #38bdf8; text-decoration: none; }
+        .title-link:hover { text-decoration: underline; }
+        .video-box { padding: 15px; background: #334155; border-radius: 8px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="header-area">
+        <h1> 宇宙写真ギャラリー</h1>
+        <a href="/random" class="btn btn-random"> ランダムな宇宙写真を表示</a>
+    </div>
+
+    <!-- メイン表示エリア -->
+    <div class="card" th:if="${nasa != null}">
+        <h2 th:text="${nasa['title']}">タイトル</h2>
+        <p th:text="${nasa['date']}">日付</p>
+        
+        <!-- 画像の場合 -->
+        <div th:if="${nasa['media_type'] == 'image'}">
+            <img th:src="${nasa['url']}" alt="NASA Photo"/>
+        </div>
+        
+        <!-- 動画の場合：埋め込み拒否回避のため直接リンクを提示 -->
+        <div th:if="${nasa['media_type'] == 'video'}" class="video-box">
+            <p>🎬 このコンテンツは動画・アニメーションです。</p>
+            <a th:href="${nasa['url']}" target="_blank" class="btn">▶ 外部サイトで動画を見る</a>
+        </div>
+
+        <p th:text="${nasa['explanation']}" style="margin-top: 15px; line-height: 1.6;">説明文</p>
+
+        <form th:action="@{/favorites}" method="post" style="margin-top: 15px;">
+            <input type="hidden" name="title" th:value="${nasa['title']}"/>
+            <input type="hidden" name="url" th:value="${nasa['url']}"/>
+            <input type="hidden" name="date" th:value="${nasa['date']}"/>
+            <input type="hidden" name="explanation" th:value="${nasa['explanation']}"/>
+            <button type="submit"> お気に入りに追加</button>
+        </form>
+    </div>
+
+    <!-- お気に入りリスト -->
+    <h2> お気に入りリスト</h2>
+    <div th:each="fav : ${favorites}" class="card">
+        <!-- 💡 タイトルをクリックするとその日付のメイン表示（説明文つき）に移動します -->
+        <h3>
+            <a th:href="@{/by-date(date=${fav.date})}" th:text="${fav.title}" class="title-link"></a>
+        </h3>
+        
+        <!-- サムネイル画像（画像URLの場合のみ表示） -->
+        <img th:if="${fav.url != null and !fav.url.contains('html')}" th:src="${fav.url}" style="max-width: 200px;"/>
+        <p th:text="'撮影/登録日: ' + ${fav.date}"></p>
+        <p th:if="${fav.explanation != null}" th:text="${#strings.abbreviate(fav.explanation, 100)}" style="color: #94a3b8; font-size: 0.9em;"></p>
+
+        <!-- メモ更新 -->
+        <form th:action="@{/favorites/{id}/update(id=${fav.id})}" method="post" style="margin-top: 10px;">
+            <input type="text" name="memo" th:value="${fav.memo}"/>
+            <button type="submit">メモ更新</button>
+        </form>
+
+        <!-- 削除 -->
+        <form th:action="@{/favorites/{id}/delete(id=${fav.id})}" method="post" style="margin-top: 10px;">
+            <button type="submit" style="background: #ef4444; color: white;">削除</button>
+        </form>
+    </div>
+</body>
+</html>
