@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class NasaService {
@@ -16,20 +17,15 @@ public class NasaService {
 
     public Map<String, Object> getTodaySpaceImage() {
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(BASE_URL + apiKey, Map.class);
-    }
-
-    public Map<String, Object> getRandomSpaceImage() {
-        RestTemplate restTemplate = new RestTemplate();
-        List<Map<String, Object>> list = restTemplate.getForObject(BASE_URL + apiKey + "&count=1", List.class);
-        if (list != null && !list.isEmpty()) {
-            return list.get(0);
+        try {
+            return restTemplate.getForObject(BASE_URL + apiKey, Map.class);
+        } catch (Exception e) {
+            // NASA APIがエラーを返した場合は、空のデータ（またはエラーメッセージ）を返してアプリの崩壊を防ぐ
+            Map<String, Object> fallback = new HashMap<>();
+            fallback.put("title", "NASA API Temporary Error");
+            fallback.put("url", "");
+            fallback.put("explanation", "現在NASAのAPIサーバーが応答していません。");
+            return fallback;
         }
-        return getTodaySpaceImage();
-    }
-
-    public Map<String, Object> getImageByDate(String date) {
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(BASE_URL + apiKey + "&date=" + date, Map.class);
     }
 }
