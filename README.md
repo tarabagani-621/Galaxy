@@ -43,3 +43,5 @@ NASAのAPIを活用して、「今日の宇宙画像」の閲覧や検索、お�
 
    ## デプロイ先URL
 https://galaxy-c3nk.onrender.com
+**ログイン** 
+ 名前　( user )  パス 　( psaa )
