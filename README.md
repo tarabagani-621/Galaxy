@@ -39,3 +39,5 @@ NASAのAPIを活用して、「今日の宇宙画像」の閲覧や検索、お�
 1. リポジトリをクローンします。
    ```bash
    git clone [https://github.com/tarabagani-621/Galaxy.git](https://github.com/tarabagani-621/Galaxy.git)
+
+   https://galaxy-c3nk.onrender.com](https://galaxy-c3nk.onrender.com
