@@ -40,4 +40,5 @@ NASAのAPIを活用して、「今日の宇宙画像」の閲覧や検索、お�
    ```bash
    git clone [https://github.com/tarabagani-621/Galaxy.git](https://github.com/tarabagani-621/Galaxy.git)
 
-   https://galaxy-c3nk.onrender.com](https://galaxy-c3nk.onrender.com
+   ## デプロイ先URL
+https://galaxy-c3nk.onrender.com
