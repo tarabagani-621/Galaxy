@@ -25,14 +25,18 @@ public class NasaService {
         }
     }
 
-    // ランダムな画像を取得
-    public List<Map<String, Object>> getRandomSpaceImage() {
+    // ランダムな画像を取得（Controller側の期待に合わせて Map を返す形に調整）
+    public Map<String, Object> getRandomSpaceImage() {
         RestTemplate restTemplate = new RestTemplate();
         try {
             String url = BASE_URL + apiKey + "&count=1";
-            return restTemplate.getForObject(url, List.class);
+            List<Map<String, Object>> response = restTemplate.getForObject(url, List.class);
+            if (response != null && !response.isEmpty()) {
+                return response.get(0);
+            }
+            return createFallbackMap("データが取得できませんでした。");
         } catch (Exception e) {
-            return List.of(createFallbackMap("NASA API Error: ランダム画像を取得できませんでした。"));
+            return createFallbackMap("NASA API Error: ランダム画像を取得できませんでした。");
         }
     }
 
